@@ -60,7 +60,13 @@ export const Home = () => {
       {filteredPosts.length === 0 && <p>Não existem posts</p>}
 
       <div className="button-container">
-        {!searchValue && <Button text="Load more" onClick={loadMorePosts} disabled={noMorePosts} />}
+        {!searchValue && (
+          <Button
+            text="Load more"
+            onClick={loadMorePosts}
+            disabled={noMorePosts}
+          />
+        )}
       </div>
     </section>
   );
