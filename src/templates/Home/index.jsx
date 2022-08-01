@@ -6,7 +6,6 @@ import { Posts } from '../../components/Posts';
 import { loadPosts } from '../../utils/load-posts';
 import { Button } from '../../components/Button';
 import { TextInput } from '../../components/TextInput';
-import useFetch from '../../hooks/useFetch';
 
 export const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -14,12 +13,6 @@ export const Home = () => {
   const [page, setPage] = useState(0);
   const [postsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState('');
-  const [postsResult, postsLoading] = useFetch(
-    'https://jsonplaceholder.typicode.com/posts',
-  );
-  const [photosResult, photosLoading] = useFetch(
-    'https://jsonplaceholder.typicode.com/photos',
-  );
 
   const noMorePosts = page + postsPerPage >= allPosts.length;
 
@@ -29,15 +22,12 @@ export const Home = () => {
       })
     : posts;
 
-  const handleLoadPosts = useCallback(
-    async (page, postsPerPage) => {
-      const postsAndPhotos = await loadPosts(postsResult, photosResult);
+  const handleLoadPosts = useCallback(async (page, postsPerPage) => {
+    const postsAndPhotos = await loadPosts();
 
-      setPosts(postsAndPhotos.slice(page, postsPerPage));
-      setAllPosts(postsAndPhotos);
-    },
-    [photosResult, postsResult],
-  );
+    setPosts(postsAndPhotos.slice(page, postsPerPage));
+    setAllPosts(postsAndPhotos);
+  }, []);
 
   useEffect(() => {
     handleLoadPosts(0, postsPerPage);
@@ -64,13 +54,8 @@ export const Home = () => {
 
         <TextInput searchValue={searchValue} handleChange={handleChange} />
       </div>
-
       {filteredPosts.length > 0 && <Posts posts={filteredPosts} />}
-
-      {filteredPosts.length === 0 && postsLoading && photosLoading && (
-        <p>Não existem posts</p>
-      )}
-
+      {filteredPosts.length === 0 && <p>Não existem posts</p>}
       <div className="button-container">
         {!searchValue && (
           <Button
